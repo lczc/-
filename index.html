@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .box{
+            margin: 50px;
+            overflow: hidden;
+
+        }
+        .box .title{
+            overflow: hidden;
+            background: #f4f4f4;
+        }
+        .box .title li{
+            float: left;
+            padding: 15px 0px;
+            width:160px;
+            text-align: center;
+        }
+        .box .content{
+            border-bottom: 1px solid #ccc;
+            overflow: hidden;
+        }
+        .box .content li{
+            float: left;
+            padding: 15px 0px;
+            width:160px;
+            text-align: center;
+        }
+        .box .content li .number{
+            width: 20px;
+        }
+        .number{
+            text-align: center;
+        }
+        .delete:hover{
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div class="box">
+    <ul class="title">
+        <li>
+            <input type="checkbox" date-check="全选" class="check-all">
+            <span>全选</span>
+        </li>
+        <li>商品信息</li>
+        <li>单价</li>
+        <li>数量</li>
+        <li>金额</li>
+        <li>操作</li>
+    </ul>
+    <div class="content-list">
+
+    </div>
+    总价 ￥
+    <a class="sum"></a>
+</div>
+</body>
+<script>
+
+    function Buy(date){
+        this.date=date;
+        this.content_list=document.getElementsByClassName("content-list")[0]
+        this.sum=document.querySelector(".sum")
+        this.check_all=document.getElementsByClassName("check-all")[0]
+
+
+
+    }
+    Buy.prototype={
+        //创建Ul
+        create:function(obj,index){
+         var str=""
+            str+=' <ul class="content" date-index="'+index+'">';
+            str+='<li><input type="checkbox" class="choose1" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>';
+            str+='<li>'+obj.name+'</li>';
+            str+='<li>'+obj.price+'</li>';
+            str+='<li><input type="button" value="-" class="less"><input type="text" class="number" value="'+obj.num+'"><input type="button" value="+" class="add"></li>';
+            str+='<li>'+obj.num*obj.price+'</li>';
+            str+='<li class="delete">删除</li>';
+            str+="</ul>";
+            return str;
+
+        },
+        //添加
+        inHtml:function(){
+            var str=""
+            var sumAll=0;
+            for(var i=0;i<this.date.length;i++) {
+                if(this,date[i].complated){
+                    sumAll += this.date[i].num * this.date[i].price
+                }
+                str += this.create(date[i],i)
+            }
+            this.content_list.innerHTML=str
+            obj.move();
+            obj.btn();
+            obj.reduce();
+            obj.sum1(sumAll)
+            obj.selectALL();
+            obj.selet();
+
+        },
+
+        //删除事件
+        move:function(){
+            this.delete=document.querySelectorAll(".delete")
+            this.oUl=document.querySelector(".content-list ul")
+            for(var i =0;i<this.delete.length;i++){
+                var that=this;
+                that.delete[i].onclick=function(){
+                var index=this.parentNode.getAttribute("date-index")
+                that.content_list.removeChild(that.oUl)
+                //that.date[this.index].remove();
+                    that.date.splice(index,1)
+                    obj.inHtml()
+                    //console.log(obj.date)
+                }
+            }
+
+        },
+        //加按钮
+        btn:function(){
+            this.add=document.querySelectorAll(".add")
+            this.number=document.querySelector(".number")
+            for(var i=0;i<this.add.length;i++){
+                var that=this;
+                that.add[i].onclick=function(){
+                    var index=this.parentNode.parentNode.getAttribute("date-index")
+                    that.date[index].num+=1;
+                    obj.inHtml()
+                }
+            }
+        },
+        //减按钮
+        reduce:function(){
+            this.less=document.querySelectorAll(".less")
+            this.number=document.querySelector(".number")
+            for(var i=0;i<this.less.length;i++){
+                var that=this;
+                that.less[i].onclick=function(){
+                    var index=this.parentNode.parentNode.getAttribute("date-index")
+                    that.date[index].num-=1;
+                    if(that.date[index].num<1){
+                        that.date[index].num=0;
+                    }
+                    obj.inHtml()
+                }
+            }
+        },
+        //求和
+        sum1:function(sumAll){
+            this.sum.innerHTML=sumAll;
+
+        },
+        //全选
+        selectALL:function(){
+            var that=this;
+            var off=this.check_all.getAttribute("date-check")
+            this.check_all.onclick=function(){
+                for(var i=0;i<that.date.length;i++) {
+                    if(off=="全选"){
+                        that.date[i].complated = true;
+                        this.setAttribute("date-check","不选");
+                    }
+                    else{
+                        that.date[i].complated =false;
+                        this.setAttribute("date-check","全选");
+                    }
+                }
+                          obj.inHtml()
+            }
+
+        },
+        //单选
+        selet:function(){
+            this.choose1=document.querySelectorAll(".choose1")
+            var that=this;
+             for(var i=0;i<this.choose1.length;i++){
+                 this.choose1[i].onclick=function() {
+                     var index=this.parentNode.parentNode.getAttribute("date-index")
+                     that.date[index].complated= !that.date[index].complated;
+                     obj.inHtml();
+                 }
+
+             }
+        },
+        //绑定事件
+
+    }
+
+    var date=[
+        {name:"化装品1",price:55,num:1,sumPrice:110,complated:false},
+        {name:"化装品2",price:56,num:2,sumPrice:111,complated:true},
+        {name:"化装品3",price:57,num:1,sumPrice:112,complated:false}
+             ]
+    var obj=new Buy(date)
+    obj.inHtml();
+</script>
+</html>
